@@ -1,0 +1,60 @@
+version: '3.9'
+
+services:
+  user-db:
+    image: postgres
+    container_name: user-db
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: user_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - user-db-data:/var/lib/postgresql/data
+
+  post-db:
+    image: postgres
+    container_name: post-db
+    environment:
+      POSTGRES_USER: post
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: post_db
+    ports:
+      - "5433:5432"
+    volumes:
+      - post-db-data:/var/lib/postgresql/data
+
+  user-service:
+    build: ./user-service
+    ports:
+      - "4000:4000"
+    depends_on:
+      - user-db
+    volumes:
+      - ./user-service/src:/usr/src/app/src
+    environment:
+      DATABASE_HOST: user-db
+      DATABASE_PORT: 5432
+      DATABASE_USER: user
+      DATABASE_PASSWORD: password
+      DATABASE_NAME: user_db
+
+
+  post-service:
+    build: ./post-service
+    ports:
+      - "4001:4000"
+    depends_on:
+      - post-db
+    volumes:
+      - ./post-service/src:/usr/src/app/src
+    environment:
+      DATABASE_HOST: post-db
+      DATABASE_PORT: 5432
+      DATABASE_USER: post
+      DATABASE_PASSWORD: password
+      DATABASE_NAME: post_db
+volumes:
+  user-db-data:
+  post-db-data:
