@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "@nestjs/axios": "^3.0.2",
     "@nestjs/microservices": "^10.3.10"
   }
 }

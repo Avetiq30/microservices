@@ -1,60 +1,74 @@
 version: '3.9'
 
 services:
-  user-db:
+  book-db:
     image: postgres
-    container_name: user-db
+    container_name: book-db
     environment:
-      POSTGRES_USER: user
+      POSTGRES_USER: book
       POSTGRES_PASSWORD: password
-      POSTGRES_DB: user_db
+      POSTGRES_DB: book_db
     ports:
       - "5432:5432"
     volumes:
-      - user-db-data:/var/lib/postgresql/data
+      - book-db-data:/var/lib/postgresql/data
 
-  post-db:
+  order-db:
     image: postgres
-    container_name: post-db
+    container_name: order-db
     environment:
-      POSTGRES_USER: post
+      POSTGRES_USER: order
       POSTGRES_PASSWORD: password
-      POSTGRES_DB: post_db
+      POSTGRES_DB: order_db
     ports:
       - "5433:5432"
     volumes:
-      - post-db-data:/var/lib/postgresql/data
+      - order-db-data:/var/lib/postgresql/data
 
-  user-service:
-    build: ./user-service
+  book-service:
+    build: ./book-service
     ports:
       - "4000:4000"
     depends_on:
-      - user-db
+      - book-db
     volumes:
-      - ./user-service/src:/usr/src/app/src
+      - ./book-service/src:/usr/src/app/src
     environment:
-      DATABASE_HOST: user-db
+      DATABASE_HOST: book-db
       DATABASE_PORT: 5432
-      DATABASE_USER: user
+      DATABASE_USER: book
       DATABASE_PASSWORD: password
-      DATABASE_NAME: user_db
+      DATABASE_NAME: book_db
 
 
-  post-service:
-    build: ./post-service
+  order-service:
+    build: ./order-service
     ports:
       - "4001:4000"
     depends_on:
-      - post-db
+      - order-db
     volumes:
-      - ./post-service/src:/usr/src/app/src
+      - ./order-service/src:/usr/src/app/src
     environment:
-      DATABASE_HOST: post-db
+      DATABASE_HOST: order-db
       DATABASE_PORT: 5432
-      DATABASE_USER: post
+      DATABASE_USER: order
       DATABASE_PASSWORD: password
-      DATABASE_NAME: post_db
+      DATABASE_NAME: order_db
+
+  gateway-service:
+    build: ./gateway
+    ports:
+      - "3002:3000"
+    depends_on:
+      - book-service
+      - order-service
+    volumes:
+      - ./gateway/src:/usr/src/app/src
+    environment:
+      BOOK_SERVICE_URL: http://book-service:4000
+      ORDER_SERVICE_URL: http://order-service:4001
+
 volumes:
-  user-db-data:
-  post-db-data:
+  book-db-data:
+  order-db-data:
