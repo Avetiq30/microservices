@@ -22,8 +22,8 @@ This project is a microservices application for managing a bookstore. It include
 1. **Clone the repository:**
 
    ```bash
-   git clone <URL-of-your-repository>
-   cd <project-name>
+   git clone <git@github.com:Avetiq30/microservices.git>
+   cd <microservices>
    ```
 
 2. **Create a `.env` file in the root of the project for `book-service` and `order-service`:**
