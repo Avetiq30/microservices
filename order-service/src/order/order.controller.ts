@@ -1,6 +1,6 @@
-import { Controller, Get, Post, Body, HttpCode, HttpStatus, Param } from '@nestjs/common';
+import {Controller, Get, Post, Body, HttpCode, HttpStatus, Param, HttpException} from '@nestjs/common';
 import { OrderService } from './order.service';
-import { CreateOrderDto } from './create-order.dto';
+import { CreateOrderDto } from './Dto/create-order.dto';
 import { Order } from './order.entity';
 
 @Controller('orders')
@@ -8,15 +8,20 @@ export class OrderController {
     constructor(private readonly orderService: OrderService) {}
 
     @Post()
-    @HttpCode(HttpStatus.CREATED)
     async createOrder(@Body() createOrderDto: CreateOrderDto): Promise<Order> {
-        return this.orderService.createOrder(createOrderDto);
+        try {
+            return await this.orderService.createOrder(createOrderDto);
+        } catch (error) {
+            throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     @Get()
     async getAllOrders(): Promise<Order[]> {
-        return this.orderService.getAllOrders();
+        try {
+            return await this.orderService.getAllOrders();
+        } catch (error) {
+            throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
-
-
 }

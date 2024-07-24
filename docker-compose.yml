@@ -12,6 +12,8 @@ services:
       - "5432:5432"
     volumes:
       - book-db-data:/var/lib/postgresql/data
+    env_file:
+      - ./book-service/.env
 
   order-db:
     image: postgres
@@ -24,6 +26,8 @@ services:
       - "5433:5432"
     volumes:
       - order-db-data:/var/lib/postgresql/data
+    env_file:
+      - ./order-service/.env
 
   book-service:
     build: ./book-service
@@ -67,7 +71,7 @@ services:
       - ./gateway/src:/usr/src/app/src
     environment:
       BOOK_SERVICE_URL: http://book-service:4000
-      ORDER_SERVICE_URL: http://order-service:4001
+      ORDER_SERVICE_URL: http://order-service:4000
 
 volumes:
   book-db-data:

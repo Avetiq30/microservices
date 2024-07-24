@@ -1,6 +1,12 @@
-import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, JoinColumn } from 'typeorm';
+import {
+    Entity,
+    Column,
+    PrimaryGeneratedColumn,
+    CreateDateColumn,
+    UpdateDateColumn
+} from 'typeorm';
 
-@Entity('orders')
+@Entity('order')
 export class Order {
     @PrimaryGeneratedColumn()
     id: number;
@@ -10,4 +16,10 @@ export class Order {
 
     @Column({ type: 'int' })
     quantity: number;
+
+    @CreateDateColumn({ type: 'timestamp' })
+    createdAt: Date;
+
+    @UpdateDateColumn({ type: 'timestamp' })
+    updatedAt: Date;
 }
